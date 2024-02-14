@@ -1,0 +1,12 @@
+#programma per l'enumerazione dei metodi http abilitati
+#importazione del modulo request
+import requests
+#inserimento del url bersaglio
+url = input("inserisci target\n")
+#lista dei metodi ammessi
+metodi_http = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD']
+#ciclo per la risoluzione dei metodo
+for metodo in metodi_http:
+	response = requests.request(metodo, url)
+	#confronto e stampa del risultato per metodo
+	print(f'Metodo {metodo}: status code {response.reason}')

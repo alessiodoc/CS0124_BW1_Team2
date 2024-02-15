@@ -1,3 +1,4 @@
+# Questo programma controlla tutte le backdoor aperte sul sistema
 import socket #Questa linea importa il modulo socket di Python, che fornisce un'interfaccia a basso livello per le operazioni legate alla rete
 target = input ("Inserisci l'indirizzo IP da scansionare:") #Chiede all'utente di inserire l'indirizzo IP del target da scansionare
 portrange = input ("Inserisci le porte da scansionare:") #Richiede all'utente di inserire l'intervallo di porte da scansionare

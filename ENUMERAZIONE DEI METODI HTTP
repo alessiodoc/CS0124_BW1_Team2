@@ -1,7 +1,7 @@
-#programma per l'enumerazione dei metodi http abilitati.
-import requests #Importa il modulo requests, che fornisce funzionalità per inviare richieste HTTP.
-url = input("inserisci target\n") #Richiede all'utente di inserire l'URL del server target.
-metodi_http = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'] #Crea una lista metodi_http contenente i principali metodi HTTP che verranno testati.
-for metodo in metodi_http: #Itera attraverso ciascun metodo nella lista metodi_http utilizzando un ciclo for.
-	response = requests.request(metodo, url) #Per ogni metodo, viene effettuata una richiesta HTTP (requests.request) al server target all'URL specificato. La risposta (response) contiene informazioni sulla richiesta, come lo stato (status code).
-	print(f'Metodo {metodo}: status code {response.reason}') #Viene stampato un messaggio che indica il metodo testato e il codice di stato ottenuto dalla risposta.
+#programma per l'enumerazione dei metodi http abilitati
+import requests #Importa il modulo requests, che fornisce funzionalità per inviare richieste HTTP
+url = input("inserisci target\n") #Richiede all'utente di inserire l'URL del server target
+metodi_http = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'] #Crea una lista metodi_http contenente i principali metodi HTTP che verranno testati
+for metodo in metodi_http: #Itera attraverso ciascun metodo nella lista metodi_http utilizzando un ciclo for
+	response = requests.request(metodo, url) #Per ogni metodo, viene effettuata una richiesta HTTP (requests.request) al server target all'URL specificato. La risposta (response) contiene informazioni sulla richiesta, come lo stato (status code)
+	print(f'Metodo {metodo}: status code {response.reason}') #Viene stampato un messaggio che indica il metodo testato e il codice di stato ottenuto dalla risposta

@@ -1,20 +1,12 @@
-Questo programma controlla i metodi HTTP su una determinata porta
-import http.client #importiamo il modulo http.client
-
-#facciamo inserire all'utente l'IPv4 la porta da scansionare
-host = input("inserire ip del sistema target:\n")
-port = int(input("inserire la porta del sistema target (default 80):\n"))
+#programma per l'enumerazione dei metodi http abilitati
+#importazione del modulo request
+import requests
+#inserimento del url bersaglio
+url = input("inserisci target\n")
+#lista dei metodi ammessi
 metodi_http = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD']
-#Con questa condizione se l'utente non inserisce nulla per default utilizziamo la porta 80
-if (port==""):
-    port = 80
-#ora prova a connettersi alla porta e all'host per verificare i metodi abilitati
-try:
-    for metodo in metodi_http:
-        conn= http.client.HTTPConnection(host, port)
-        conn.request("metodo","/", headers={"Host": host})
-        response = conn.getresponse()
-        print("i metodi abilitati sono", metodo, response.reason) 
-        conn.close()
-except ConnectionRefusedError:
-    print("connessione fallita")
+#ciclo per la risoluzione dei metodo
+for metodo in metodi_http:
+	response = requests.request(metodo, url)
+	#confronto e stampa del risultato per metodo
+	print(f'Metodo {metodo}: status code {response.reason}')

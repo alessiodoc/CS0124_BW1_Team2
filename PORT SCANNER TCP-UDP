@@ -1,17 +1,17 @@
-# Questo programma controlla tutte le backdoor aperte sul sistema.
-import socket #Questa linea importa il modulo socket di Python, che fornisce un'interfaccia a basso livello per le operazioni legate alla rete.
-target = input ("Inserisci l'indirizzo IP da scansionare:") #Chiede all'utente di inserire l'indirizzo IP del target da scansionare.
-portrange = input ("Inserisci le porte da scansionare:") #Richiede all'utente di inserire l'intervallo di porte da scansionare.
+# Questo programma controlla tutte le backdoor aperte sul sistema
+import socket #Questa linea importa il modulo socket di Python, che fornisce un'interfaccia a basso livello per le operazioni legate alla rete
+target = input ("Inserisci l'indirizzo IP da scansionare:") #Chiede all'utente di inserire l'indirizzo IP del target da scansionare
+portrange = input ("Inserisci le porte da scansionare:") #Richiede all'utente di inserire l'intervallo di porte da scansionare
 
-#Prende l'intervallo di porte in input, lo divide utilizzando il trattino come separatore e converte le due stringhe risultanti in interi. Imposta i valori di porta bassa e alta per l'intervallo di scansione.
+#Prende l'intervallo di porte in input, lo divide utilizzando il trattino come separatore e converte le due stringhe risultanti in interi. Imposta i valori di porta bassa e alta per l'intervallo di scansione
 lowport= int( portrange.split ('-')[0])
 highport= int( portrange.split ('-')[1])
 
-print ('Scanning Hosts', target, 'from port', lowport, 'to port', highport) #Stampa un messaggio indicando l'host di destinazione e l'intervallo di scansioni dalle porte basse alle porte alte.
+print ('Scanning Hosts', target, 'from port', lowport, 'to port', highport) #Stampa un messaggio indicando l'host di destinazione e l'intervallo di scansioni dalle porte basse alle porte alte
 
-#Questo ciclo itera sull'intervallo di porte TCP specificato dall'utente. Crea un socket TCP (socket.AF_INET indica IPv4) e tenta di connettersi all'indirizzo IP e alla porta specificati. 
-#Se il tentativo di connessione (connect_ex) restituisce 0, significa che la porta è aperta, e viene stampato un messaggio in tal senso. Altrimenti, viene stampato che la porta è chiusa.
-for port in range (lowport, highport+1): # Il +1 è stato aggiunto per poter includere il limite superiore in un intervallo, come nel caso della scansione delle porte in cui si voglia includere sia la porta iniziale che quella finale nella scansione.
+#Questo ciclo itera sull'intervallo di porte TCP specificato dall'utente. Crea un socket TCP (socket.AF_INET indica IPv4) e tenta di connettersi all'indirizzo IP e alla porta specificati
+#Se il tentativo di connessione (connect_ex) restituisce 0, significa che la porta è aperta, e viene stampato un messaggio in tal senso. Altrimenti, viene stampato che la porta è chiusa
+for port in range (lowport, highport+1): # Il +1 è stato aggiunto per poter includere il limite superiore in un intervallo, come nel caso della scansione delle porte in cui si voglia includere sia la porta iniziale che quella finale nella scansione
     s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     status= s.connect_ex((target, port))
     if (status==0):
@@ -19,9 +19,9 @@ for port in range (lowport, highport+1): # Il +1 è stato aggiunto per poter inc
     else:
         print( 'PORT TCP', port, '- CLOSED')
 
-#Questo ciclo fa lo stesso del precedente, ma per le porte UDP. Crea un socket UDP (socket.SOCK_DGRAM) e verifica lo stato della connessione. 
-#Se il tentativo di connessione restituisce 0, significa che la porta UDP è chiusa, e viene stampato un messaggio in tal senso. Altrimenti, viene stampato che la porta UDP è aperta.
-for port in range (lowport, highport+1): ## Il +1 è stato aggiunto per poter includere il limite superiore in un intervallo, come nel caso della scansione delle porte in cui si voglia includere sia la porta iniziale che quella finale nella scansione.
+#Questo ciclo fa lo stesso del precedente, ma per le porte UDP. Crea un socket UDP (socket.SOCK_DGRAM) e verifica lo stato della connessione
+#Se il tentativo di connessione restituisce 0, significa che la porta UDP è chiusa, e viene stampato un messaggio in tal senso. Altrimenti, viene stampato che la porta UDP è aperta
+for port in range (lowport, highport+1): ## Il +1 è stato aggiunto per poter includere il limite superiore in un intervallo, come nel caso della scansione delle porte in cui si voglia includere sia la porta iniziale che quella finale nella scansione
     s2=socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     status=s2.connect_ex((target, port))
     if (status==0):

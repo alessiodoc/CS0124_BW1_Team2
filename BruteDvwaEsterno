@@ -1,4 +1,4 @@
-#Programma per il brute force
+#Programma per il brute force con metodo POST
 
 import http.client, urllib.parse #Importa i moduli necessari per la gestione delle richieste HTTP (http.client) e la codifica dei parametri (urllib.parse)
 

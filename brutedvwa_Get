@@ -42,7 +42,7 @@ for user in user_list:
 		
 #Viene creato un dizionario headers contenente gli header necessari per la richiesta HTTP GET. In particolare, c'è un header Cookie con un valore di sessione PHPSESSID	
 
-headers = {"content-type": "application/x-www-form-urlencoded","accept": "text/html,application/xhtml+xml",'Cookie':f'PHPSESSID={"687232e19a3ea1541f40b4e21a5aa43d"}'}
+headers = {"content-type": "application/x-www-form-urlencoded","accept": "text/html,application/xhtml+xml",'Cookie':f'PHPSESSID={"8d34670d4eaac7675169b4d8d7c2e19e"}'}
 		
 #Crea una connessione HTTP (HTTPConnection) al server target con l'indirizzo IP '192.168.50.101' sulla porta 80
 
@@ -50,7 +50,7 @@ conn = http.client.HTTPConnection('192.168.50.101',80)
 
 #Invia una richiesta HTTP GET all'URL finale (urlf) con i parametri e gli header specificati
 
-conn.request("GET",urlf,url ,headers)
+conn.request("GET",urlf,"" ,headers)
 
 #Riceve la risposta dal server
 

